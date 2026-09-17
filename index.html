@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IT Support Toolkit</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container">
+            <h1>🛠️ IT Support Toolkit</h1>
+            <p>Windows • Networking • Active Directory • Troubleshooting</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="hero">
+            <h2>IT Support Command Center</h2>
+            <p>Quickly search and copy commonly used IT Support commands.</p>
+
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="🔍 Search command, category or keyword..."
+                    autocomplete="off"
+                >
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stat-card">
+                <span id="commandCount">0</span>
+                <small>Commands</small>
+            </div>
+
+            <div class="stat-card">
+                <span>10</span>
+                <small>Categories</small>
+            </div>
+
+            <div class="stat-card">
+                <span>IT</span>
+                <small>Support Toolkit</small>
+            </div>
+        </section>
+
+        <nav id="categories" class="categories"></nav>
+
+        <section id="commandContainer" class="command-grid"></section>
+
+    </main>
+
+    <footer>
+        <p>IT Support Toolkit © 2026</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
