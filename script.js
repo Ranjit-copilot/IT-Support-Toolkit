@@ -627,3 +627,247 @@ Object.keys(commandCategories).forEach(category => {
         commandCategories[category].length
     );
 });
+// =========================================================
+// WEBSITE UI
+// =========================================================
+
+let selectedCategory = "all";
+
+const commandContainer = document.getElementById("commandContainer");
+const categoriesContainer = document.getElementById("categories");
+const searchInput = document.getElementById("searchInput");
+const commandCount = document.getElementById("commandCount");
+
+
+// ---------------------------------------------------------
+// CATEGORY BUTTONS
+// ---------------------------------------------------------
+
+function createCategoryButtons() {
+
+    categoriesContainer.innerHTML = "";
+
+    const allButton = document.createElement("button");
+
+    allButton.className = "category-btn active";
+    allButton.textContent = "All Commands";
+
+    allButton.onclick = () => {
+        selectedCategory = "all";
+
+        document.querySelectorAll(".category-btn")
+            .forEach(btn => btn.classList.remove("active"));
+
+        allButton.classList.add("active");
+
+        displayCommands();
+    };
+
+    categoriesContainer.appendChild(allButton);
+
+
+    Object.keys(commandCategories).forEach(category => {
+
+        const button = document.createElement("button");
+
+        button.className = "category-btn";
+        button.textContent = categoryNames[category];
+
+        button.onclick = () => {
+
+            selectedCategory = category;
+
+            document.querySelectorAll(".category-btn")
+                .forEach(btn => btn.classList.remove("active"));
+
+            button.classList.add("active");
+
+            displayCommands();
+        };
+
+        categoriesContainer.appendChild(button);
+    });
+}
+
+
+// ---------------------------------------------------------
+// DISPLAY COMMANDS
+// ---------------------------------------------------------
+
+function displayCommands() {
+
+    const keyword = searchInput.value.toLowerCase().trim();
+
+    let commands;
+
+    if (selectedCategory === "all") {
+        commands = getAllCommands();
+    } else {
+        commands = getCommandsByCategory(selectedCategory);
+    }
+
+
+    // Search filter
+
+    if (keyword) {
+
+        commands = commands.filter(item =>
+            item.name.toLowerCase().includes(keyword) ||
+            item.command.toLowerCase().includes(keyword) ||
+            item.description.toLowerCase().includes(keyword)
+        );
+
+    }
+
+
+    commandContainer.innerHTML = "";
+
+
+    // No results
+
+    if (commands.length === 0) {
+
+        commandContainer.innerHTML = `
+            <div class="no-results">
+                <h3>🔍 No commands found</h3>
+                <p>Try another keyword or category.</p>
+            </div>
+        `;
+
+        commandCount.textContent = "0";
+
+        return;
+    }
+
+
+    commandCount.textContent = commands.length;
+
+
+    // Create command cards
+
+    commands.forEach(item => {
+
+        const card = document.createElement("div");
+
+        card.className = "command-card";
+
+        card.innerHTML = `
+            <div class="command-title">
+                <h3>${escapeHTML(item.name)}</h3>
+            </div>
+
+            <p class="command-description">
+                ${escapeHTML(item.description)}
+            </p>
+
+            <div class="command-box">
+
+                <code>${escapeHTML(item.command)}</code>
+
+                <button class="copy-btn">
+                    📋 Copy
+                </button>
+
+            </div>
+        `;
+
+
+        const copyButton = card.querySelector(".copy-btn");
+
+        copyButton.addEventListener("click", () => {
+
+            copyCommand(item.command, copyButton);
+
+        });
+
+
+        commandContainer.appendChild(card);
+
+    });
+
+}
+
+
+// ---------------------------------------------------------
+// COPY COMMAND
+// ---------------------------------------------------------
+
+function copyCommand(command, button) {
+
+    navigator.clipboard.writeText(command)
+        .then(() => {
+
+            button.textContent = "✓ Copied";
+            button.classList.add("copied");
+
+            setTimeout(() => {
+
+                button.textContent = "📋 Copy";
+                button.classList.remove("copied");
+
+            }, 1500);
+
+        })
+        .catch(() => {
+
+            // Fallback for older browsers
+
+            const textarea = document.createElement("textarea");
+
+            textarea.value = command;
+
+            document.body.appendChild(textarea);
+
+            textarea.select();
+
+            document.execCommand("copy");
+
+            textarea.remove();
+
+            button.textContent = "✓ Copied";
+
+            setTimeout(() => {
+
+                button.textContent = "📋 Copy";
+
+            }, 1500);
+
+        });
+
+}
+
+
+// ---------------------------------------------------------
+// HTML SECURITY
+// ---------------------------------------------------------
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+// ---------------------------------------------------------
+// SEARCH
+// ---------------------------------------------------------
+
+searchInput.addEventListener("input", () => {
+
+    displayCommands();
+
+});
+
+
+// ---------------------------------------------------------
+// INITIALIZE
+// ---------------------------------------------------------
+
+createCategoryButtons();
+
+displayCommands();
