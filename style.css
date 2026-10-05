@@ -420,3 +420,27 @@ footer {
     }
 }
 
+
+
+/* =========================================
+   COMMAND DESCRIPTION LABEL
+   ========================================= */
+
+.command-description {
+    position: relative;
+    line-height: 1.55;
+}
+
+.command-description::before {
+    content: "What it does:";
+    display: block;
+    margin-bottom: 5px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.command-card:hover .command-description::before {
+    color: #ffffff;
+}
